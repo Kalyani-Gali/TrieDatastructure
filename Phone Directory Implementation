@@ -1,0 +1,87 @@
+#include <bits/stdc++.h>
+using namespace std;
+class TrieNode
+{
+public:
+    // If we want the output in sorted manner we use map
+    // Otherwise we can use unordered_map also
+    map<char, TrieNode *> M;
+    bool isFinal; // This boolean marks the end of a string
+    TrieNode()
+    {
+        isFinal = false;
+    }
+};
+void insert(TrieNode *&head, string s)
+{
+    TrieNode *temp = head;
+    for (int i = 0; i < s.length(); i++)
+    {
+        char c = s[i];
+        if (temp->M.find(c) == temp->M.end())
+            temp->M[c] = new TrieNode();
+ 
+
+        temp = temp->M[c];
+    }
+    temp->isFinal = true;
+}
+// Recusive check all nodes (DFS)
+void print(TrieNode *head, string s)
+{
+    if (head->isFinal)
+        cout << s << endl;
+ 
+
+    map<char, TrieNode *>::iterator it;
+    for (it = head->M.begin(); it != head->M.end(); it++)
+    {
+        print(it->second, s + it->first);
+    }
+}
+void printAll(TrieNode *head, string query)
+{
+    TrieNode *temp = head;
+    for (int i = 0; i < query.length(); i++)
+    {
+        char c = query[i];
+ 
+
+        if (temp->M.find(c) == temp->M.end())
+        {
+            cout << “No records found “
+                 << ” for “ << query << endl;
+            return;
+        }
+        temp = temp->M[c];
+    }
+    cout << “The matching Records are for “ << query << ” are” << endl;
+    print(temp, query);
+}
+int main()
+{
+    int n = 5;
+    string arr[5] = {“Mr Abc”, “Xyz”, “Xyz abc”, “abcd “, “Xyz abcde”};
+ 
+
+    TrieNode *head = new TrieNode();
+ 
+
+    for (int i = 0; i < n; i++)
+    {
+        insert(head, arr[i]);
+    }
+ 
+
+    string query = “Xyz”;
+    printAll(head, query);
+ 
+
+    cout << “********************************” << endl
+         << endl;
+ 
+
+    query = “Mr Xyz Abc”;
+    printAll(head, query);
+    return 0;
+}
